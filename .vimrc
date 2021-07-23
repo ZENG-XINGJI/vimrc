@@ -35,9 +35,15 @@ nmap zp "0p
 nmap ss :mks 
 nmap zn ]c
 nmap zb [c
-vmap zcb1 :call CplBrac("(")<cr>
-vmap zcb2 :call CplBrac("[")<cr>
-vmap zcb3 :call CplBrac("{")<cr>
+nnoremap (  :call CplBrac("(",")")<cr>
+nnoremap [  :call CplBrac("[","]")<cr>
+nnoremap {  :call CplBrac("{","}")<cr>
+nnoremap <  :call CplBrac("<",">")<cr>
+nnoremap '  :call CplBrac("'","'")<cr>
+nnoremap "  :call CplBrac("\"","\"")<cr>
+"vmap zcb1 :call CplBrac("(")<cr>
+"vmap zcb2 :call CplBrac("[")<cr>
+"vmap zcb3 :call CplBrac("{")<cr>
 vmap zhb yq:p:s/^/:call Hex2bin_core("/<cr>:s/$/")/<cr><cr>
 vmap zhd yq:p:s/^/:call Hex2dec_core("/<cr>:s/$/")/<cr><cr>
 vmap zbh yq:p:s/^/:call Bin2hex_core("/<cr>:s/$/")/<cr><cr>
@@ -47,20 +53,26 @@ vmap zdh yq:p:s/^/:call Dec2hex_core("/<cr>:s/$/")/<cr><cr>
 vmap <c-o> yq:p:s/^/:tabnew /<cr><cr>
 vmap zct   :s/\t/    /g<cr>
 vmap zp "0p
+vnoremap (  :call CplBrac("(",")")<cr>
+vnoremap [  :call CplBrac("[","]")<cr>
+vnoremap {  :call CplBrac("{","}")<cr>
+vnoremap <  :call CplBrac("<",">")<cr>
+vnoremap '  :call CplBrac("'","'")<cr>
+vnoremap "  :call CplBrac("\"","\"")<cr>
 "vmap zcol  :s/\([\[|,|(|)|:|;|\]|=]\)/@\1/g<cr>:'<,'>!column -t -s"@"<cr>
 "vmap zdep1 :s/^\s*\(\w*\) \s*\(\w*\)\s*,*\s*$/\2 .: \1 .std_logic .;/<cr>
 "vmap zdep2 :s/^\s*\(\w*\) \s*\[\s*\(\d*\)\s*:\s*\(\d*\)\s*\] \s*\(\w*\)\s*,*\s*$/\4 .: \1 .std_logic_vector (\2 downto \3) .;/<cr>
 "vmap zdes2 :s/^\s*wire \s*\[\s*\(\d*\)\s*:\s*\(\d*\)\s*\] \s*\(\w*\)\s*;\s*$/signal \3 .: .std_logic_vector (\1 downto \2)  .;/<cr>
 
-imap <c-j> <down>
-imap <c-k> <up>
-imap <c-h> <left>
-imap <c-l> <right>
-imap @dt downto
-imap @proc <esc>:call InsertProcess()<cr>
-imap ( ()<c-h>
-imap [ []<c-h>
-imap @ver [add/modify/remove<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
+inoremap <c-j> <down>
+inoremap <c-k> <up>
+inoremap <c-h> <left>
+inoremap <c-l> <right>
+inoremap @dt downto
+inoremap @proc <esc>:call InsertProcess()<cr>
+"inoremap ( ()<left>
+"inoremap [ []<left>
+inoremap @ver [add/modify/remove<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
 "imap ' ''<c-h>
 imap <c-c> <esc>
 
@@ -173,43 +185,58 @@ function! Bin2dec_core(bin_val)
     :execute ":!echo \"obase=10;ibase=2;" . input . "\" | bc"
 endfunction
 
-function!Dec2bin_core(dec_val)
+function! Dec2bin_core(dec_val)
     let decval_u = toupper(a:dec_val)
     let input = decval_u
     "echo input
     :execute ":!echo \"obase=2;ibase=10;" . input . "\" | bc"
 endfunction
 
-function!Dec2hex_core(dec_val)
+function! Dec2hex_core(dec_val)
     let decval_u = toupper(a:dec_val)
     let input = decval_u
     "echo input
     :execute ":!echo \"obase=16;ibase=10;" . input . "\" | bc"
 endfunction
 
-"function to generate vector from signal name, msb, lsb
-"function to insert ILA connect
 "function to complete (, {, [, <
-function! CplBrac(btype)
+function! CplBrac(b1,b2)
     :normal `<
     let line_offset = line(".")
     let col_offset  = col(".")
+    ":echo line(".")
+    ":echo col(".")
     :normal `>
     let line_end    = line(".")
     let col_end     = col(".")
+    ":echo line(".")
+    ":echo col(".")
 
     "insert left bracket
     let pos_offset = [0, line_offset, col_offset, 0]
-    let input_offset = "("
+    let input_offset = a:b1
     :call setpos(".", pos_offset)
     :execute ":normal i" . input_offset . "\<Esc>"
 
     "insert right bracket
     let pos_end = [0, line_end, col_end+1, 0]
-    let input_end = ")"
+    let input_end = a:b2
     :call setpos(".", pos_end)
     :execute ":normal a" . input_end . "\<Esc>"
 
+endfunction
+
+function! InsBrac(b1,b2)
+    let line_offset = line(".")
+    let col_offset  = col(".")
+    echo getline('.')[col_offset]
+    let right_char = getline('.')[col_offset]
+    if right_char == '\w' 
+        let input_offset = "("
+    else
+        let input_offset = "()"
+    endif
+    :execute ":normal i" . input_offset . "\<Esc>"
 endfunction
 
 function! InsertProcess()
@@ -302,3 +329,10 @@ function! SwPerlMode(perl_mode)
         iunmap $
     endif
 endfunction 
+
+
+"=================================
+"=== FUNRCTION TO BE IMPLEMENT ===
+"=================================
+"function to generate vector from signal name, msb, lsb
+"function to insert ILA connect
