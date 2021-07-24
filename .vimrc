@@ -70,8 +70,12 @@ inoremap <c-h> <left>
 inoremap <c-l> <right>
 inoremap @dt downto
 inoremap @proc <esc>:call InsertProcess()<cr>
-"inoremap ( ()<left>
-"inoremap [ []<left>
+inoremap (( ()<left>
+inoremap [[ []<left>
+inoremap {{ {}<left>
+inoremap "" ""<left>
+inoremap '' ''<left>
+inoremap << <><left>
 inoremap @ver [add/modify/remove<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
 "imap ' ''<c-h>
 imap <c-c> <esc>
