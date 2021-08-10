@@ -40,7 +40,7 @@ nnoremap [  :call CplBrac("[","]")<cr>
 nnoremap {  :call CplBrac("{","}")<cr>
 nnoremap <  :call CplBrac("<",">")<cr>
 nnoremap '  :call CplBrac("'","'")<cr>
-nnoremap "  :call CplBrac("\"","\"")<cr>
+"nnoremap "  :call CplBrac("\"","\"")<cr>
 "vmap zcb1 :call CplBrac("(")<cr>
 "vmap zcb2 :call CplBrac("[")<cr>
 "vmap zcb3 :call CplBrac("{")<cr>
@@ -58,7 +58,7 @@ vnoremap [  :call CplBrac("[","]")<cr>
 vnoremap {  :call CplBrac("{","}")<cr>
 vnoremap <  :call CplBrac("<",">")<cr>
 vnoremap '  :call CplBrac("'","'")<cr>
-vnoremap "  :call CplBrac("\"","\"")<cr>
+"vnoremap "  :call CplBrac("\"","\"")<cr>
 "vmap zcol  :s/\([\[|,|(|)|:|;|\]|=]\)/@\1/g<cr>:'<,'>!column -t -s"@"<cr>
 "vmap zdep1 :s/^\s*\(\w*\) \s*\(\w*\)\s*,*\s*$/\2 .: \1 .std_logic .;/<cr>
 "vmap zdep2 :s/^\s*\(\w*\) \s*\[\s*\(\d*\)\s*:\s*\(\d*\)\s*\] \s*\(\w*\)\s*,*\s*$/\4 .: \1 .std_logic_vector (\2 downto \3) .;/<cr>
@@ -76,7 +76,7 @@ inoremap {{ {}<left>
 inoremap "" ""<left>
 inoremap '' ''<left>
 inoremap << <><left>
-inoremap @ver [add/modify/remove<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
+inoremap @ver [add/modify/remove]<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
 "imap ' ''<c-h>
 inoremap <c-c> <esc>
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
@@ -108,7 +108,7 @@ autocmd BufNewFile,BufRead *.json set ft=javascript
 "autocmd BufNewFile,BufRead *.v    :call SwVerilogMode(1)<cr>
 "autocmd FileType v,sv    call SwVerilogMode(1)<cr>
 "autocmd FileType v,sv    execute ":normal a This is a HDL file\<Esc>"
-autocmd BufNewFile,BufRead *.v  execute ":normal i This is a HDL file"
+"autocmd BufNewFile,BufRead *.v  execute ":normal i This is a HDL file"
 
 if &term =~ "xterm"
     let &t_SI = "\<Esc>[6 q"
@@ -298,7 +298,7 @@ function! SwVerilogMode(verilog_mode)
     if a:verilog_mode == "1"
         inoremap @mod   module XXX(<cr><esc>A);<cr>endmodule<esc>kkA
         inoremap @alw   always @ (posedge CLK or negedge RSTN) begin<cr>end<cr>
-        inoremap @if    if () begin<cr>end else begin<cr>end<cr>
+        inoremap @if    if () begin<cr>end else begin<cr>end
         inoremap @gen   generate<cr>endgenerate<cr>
         inoremap @for   integer var;<cr>for(var=0; var<; var++) begin<cr>end<cr>
         inoremap @init  initial begin<cr>end<cr>
@@ -340,7 +340,13 @@ function! SwPerlMode(perl_mode)
     endif
 endfunction 
 
-
+function! SwVhdlMode(vhdl_mode)
+    if a:vhdl_mode == "1"
+        inoremap @proc  <esc>:call InsertProcess()<cr>
+    else
+        unmap @proc
+    endif
+endfunction 
 "=================================
 "=== FUNRCTION TO BE IMPLEMENT ===
 "=================================
@@ -541,4 +547,4 @@ set cpt=.,k,w,b
 set completeopt=menu,menuone,noselect
 let g:apc_enable_ft = {'text':1, 'verilog':1, '"vim':1}
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
-
+ApcEnable
