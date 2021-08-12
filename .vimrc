@@ -331,12 +331,21 @@ endfunction
 
 function! SwPerlMode(perl_mode)
     if a:perl_mode == "1"
+        inoremap @#!  #!/usr/local/bin/perl
         inoremap @des   #============================================<cr># (C) Copyright All rights reserved. Artiza networks Inc.<cr>#DESCRIPTION:<cr>#AUTHOR:Zeng<cr>#HISTORY<cr>#REV        EDITOR     DATE         DESCITPTION<cr>#============================================<cr>
         inoremap $  ${}<left>
         inoremap @for   for (my ${cnt}=0; ${cnt}<xx; ${cnt}++) {<cr>}<cr><up><up>
+        inoremap @foreach   foreach ${elemt} (@arry) {<cr>}<cr><up><up>
+        inoremap @if    if () {<cr>}
+        inoremap @open open(FILE, "<", ${file}) or die ("can't open file ${file} ($!)");<cr>close(FILE) or die ("can't close file ${file} ($!)");
+        inoremap @push push(@array, "") ;
+        inoremap @opt  my ${opt};<cr>GetOptions (<cr>    'option' => \${opt}<cr>);
     else
+        iunmap @head
         iunmap @des
         iunmap $
+        iunmap @open
+        iunmap @opt
     endif
 endfunction 
 
@@ -347,6 +356,17 @@ function! SwVhdlMode(vhdl_mode)
         unmap @proc
     endif
 endfunction 
+
+function! SetLanguage()
+    if &filetype == "systemverilog" 
+        call SwVerilogMode(1)
+    elseif &filetype == "verilog" 
+        call SwVerilogMode(1)
+    elseif &filetype == "perl" 
+        call SwPerlMode(1) 
+    endif
+endfunction
+call SetLanguage()
 "=================================
 "=== FUNRCTION TO BE IMPLEMENT ===
 "=================================
