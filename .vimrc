@@ -91,6 +91,7 @@ set hlsearch incsearch
 set cursorline
 set listchars=tab:..
 set list
+set noswapfile
 highlight DiffAdd    cterm=bold ctermfg=15 ctermbg=34
 highlight DiffDelete cterm=bold ctermfg=15 ctermbg=219
 highlight DiffChange cterm=bold ctermfg=15 ctermbg=75
@@ -312,6 +313,11 @@ function! SwVerilogMode(verilog_mode)
         inoremap @case  case (XXX)<cr>YYY:begin<cr>end<cr>default:<cr>end<cr>endcase<cr>
         inoremap @fpck  set_false_path -from [get_clocks -of_objects [get_pins PATH_CLOCK1]] -to [get_clocks -of_objects [get_pins PATH_CLOCK2]]
         inoremap @fpdt  set_false_path -from [get_pins {PATH_START}] -to [get_pins {PATH_END}]
+        "command! Vh2vModDefT1    :'<,'>s/entity \s*\(\w*\) \s*is/\1 i_\1/
+        "command! Vh2vPLogDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*\s*;/\2put .\1 .;
+        "command! Vh2vPVecDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*(\s*\(\d*\) \s*\w*to \s*\(\d*\)\s*)\s*;/\2put [\3:\4] .\1 .;/
+        "command! Vh2vCmnt        :'<,'>s/--/.\/\//g
+        "command! Vh2vCol         :'<,'>!column -t -s "."
     else
         iunmap @mod
         iunmap @alw
@@ -565,6 +571,18 @@ augroup END
 
 set cpt=.,k,w,b
 set completeopt=menu,menuone,noselect
-let g:apc_enable_ft = {'text':1, 'verilog':1, '"vim':1}
+let g:apc_enable_ft = {'text':1, 'verilog':1, '"vim':1, 'vhdl':1}
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
 ApcEnable
+
+
+"===============================
+"=== VERILOG EDIT SETTING ======
+"===============================
+let myvimrc = $MYVIMRC
+let veriEdit_dir = substitute(myvimrc,"\.vimrc$","veriEdit","g")
+"echo veriEdit_dir 
+command! Vh2vModDef  execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v module_def -tp<cr>"
+command! Vh2vRegDef  execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v reg_def -tp<cr>"
+command! Vh2vWireDef execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v wire_def -tp<cr>"
+command! Vh2vInst    execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v instance -tp<cr>"
