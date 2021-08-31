@@ -21,6 +21,9 @@ my ${opt_desc} = "NO_DESC" ;
 my ${opt_clk} = "CLK" ;
 my ${opt_rst} = "RST" ;
 my ${opt_active} = 0 ;
+my ${opt_sigtype} = "signal" ;
+my ${opt_signame} = "SIG_NAME" ;
+my ${opt_bitwidth} = 0 ;
 my ${opt_procname} = "PROCESS_NAME" ;
 GetOptions (
     'f=s'     => \${file_in} ,
@@ -31,6 +34,9 @@ GetOptions (
     'rst=s'  => \${opt_rst} ,
     'activeh!'  => \${opt_active} ,
     'procname' => \${opt_procname} ,
+    'signame=s' => \${opt_signame}  ,
+    'sigtype=s' => \${opt_sigtype}  ,
+    'bitwidth=i' => \${opt_bitwidth} ,
     'help|h!' => \${help} ,
     'v!'      => \${verbose} 
 );
@@ -62,6 +68,18 @@ if (${file_in} ne "NO_FILE") {
 #=====================
 if (${opt_desc} eq "process") {
     print_process((${opt_clk},${opt_rst},${opt_active},${opt_procname})) ;
+} 
+elsif (${opt_desc} eq "ila") {
+    inssert_ila() ;
+}
+elsif (${opt_desc} eq "if") {
+    print_if() ;
+}
+elsif (${opt_desc} eq "entity") {
+    print_entity() ;
+}
+elsif (${opt_desc} eq "logic") {
+    print_logic((${opt_sigtype},${opt_signame})) ;
 }
 
 #==============================
@@ -101,4 +119,64 @@ sub print_process {
 EOS
     print ${description} ;
 
+}
+
+sub conv_enity2component{
+    my ${line} = $_[0] ;
+    ${line} =~ s/^\s*entity\s+?(\w*)\s+?is/    component $_[0]/ ;
+    ${line} =~ s/^\s*end\s+?\w*\s+?;/    end component ;/ ;
+}
+
+sub inssert_ila{
+    my ${desc} = <<EOS ;
+    component module
+      Port ( 
+        clk : in STD_LOGIC;
+        probe0 : in STD_LOGIC_VECTOR ( 63 downto 0 );
+        probe1 : in STD_LOGIC_VECTOR ( 63 downto 0 );
+        probe2 : in STD_LOGIC_VECTOR ( 63 downto 0 )
+      );
+    end component ;
+
+    instance: module 
+        Port map ( 
+        clk                                 =>    clk                                      ,
+        probe0    (63  downto  0 )          =>    probe0    (63  downto  0 )               ,
+        probe1    (63  downto  0 )          =>    probe1    (63  downto  0 )               ,
+        probe2    (63  downto  0 )          =>    probe2    (63  downto  0 )
+        );
+EOS
+    print ${desc} ;
+}
+
+sub print_if {
+    my ${desc} = <<EOS ;
+    if () then
+    elsif () then
+    else
+    end if;
+EOS
+    print ${desc} ;
+}
+
+sub print_entity {
+    my ${desc} = <<EOS ;
+entity MODULE is
+  port(
+  ) ;
+end MODULE ;
+EOS
+    print ${desc} ;
+}
+
+sub print_logic {
+    my ${type} = $_[0] ;
+    my ${sig_name} = $_[1] ;
+    my ${desc} = "" ;
+    if (${type} eq "signal"){
+    ${desc} = "signal ${sig_name}     : std_logic  ;\n";
+} else {
+    ${desc} = "${sig_name}     : ${type} std_logic  ;\n";
+}
+    print ${desc} ;
 }

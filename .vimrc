@@ -295,84 +295,6 @@ function! CheckSyntax()
     :execute ":normal /end if\s*$"
 endfunction
 
-function! SwVerilogMode(verilog_mode)
-    if a:verilog_mode == "1"
-        inoremap @mod   module XXX(<cr><esc>A);<cr>endmodule<esc>kkA
-        inoremap @alw   always @ (posedge CLK or negedge RSTN) begin<cr>end<cr>
-        inoremap @if    if () begin<cr>end else begin<cr>end
-        inoremap @gen   generate<cr>endgenerate<cr>
-        inoremap @for   integer var;<cr>for(var=0; var<; var++) begin<cr>end<cr>
-        inoremap @init  initial begin<cr>end<cr>
-        inoremap @repe  repeat () @ (posedge CLK);<esc>
-        inoremap @task  task task_name;<cr>begin<cr>endtask<cr>
-        vmap     zci    :s/\./#\./<cr>:'<,'>s/(/#(/<cr>:'<,'>s/)/#)/<cr>:'<,'>s/,/#,/<cr>:'<,'>!column -t -s"\#"<cr>
-        "inoremap @ck  _|<esc>ki_<esc>ja|
-        inoremap @ck  ___HHH
-        inoremap @des   //============================================<cr>// (C) Copyright All rights reserved. Artiza networks Inc.<cr>//DESCRIPTION:<cr>//AUTHOR:Zeng<cr>//HISTORY<cr>//REV        EDITOR     DATE         DESCITPTION<cr>//============================================<cr>
-        inoremap @begin begin<cr>end<cr>
-        inoremap @case  case (XXX)<cr>YYY:begin<cr>end<cr>default:<cr>end<cr>endcase<cr>
-        inoremap @fpck  set_false_path -from [get_clocks -of_objects [get_pins PATH_CLOCK1]] -to [get_clocks -of_objects [get_pins PATH_CLOCK2]]
-        inoremap @fpdt  set_false_path -from [get_pins {PATH_START}] -to [get_pins {PATH_END}]
-        "command! Vh2vModDefT1    :'<,'>s/entity \s*\(\w*\) \s*is/\1 i_\1/
-        "command! Vh2vPLogDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*\s*;/\2put .\1 .;
-        "command! Vh2vPVecDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*(\s*\(\d*\) \s*\w*to \s*\(\d*\)\s*)\s*;/\2put [\3:\4] .\1 .;/
-        "command! Vh2vCmnt        :'<,'>s/--/.\/\//g
-        "command! Vh2vCol         :'<,'>!column -t -s "."
-    else
-        iunmap @mod
-        iunmap @alw
-        iunmap @if
-        iunmap @gen
-        iunmap @for
-        iunmap @init
-        vunmap zci
-        iunmap @ck
-        iunmap @des
-        iunmap @begin 
-        iunmap @case 
-        iunmap @fpck 
-        iunmap @fpdt 
-    endif
-endfunction 
-
-function! SwPerlMode(perl_mode)
-    if a:perl_mode == "1"
-        inoremap @#!  #!/usr/local/bin/perl
-        inoremap @des   #============================================<cr># (C) Copyright All rights reserved. Artiza networks Inc.<cr>#DESCRIPTION:<cr>#AUTHOR:Zeng<cr>#HISTORY<cr>#REV        EDITOR     DATE         DESCITPTION<cr>#============================================<cr>
-        inoremap $  ${}<left>
-        inoremap @for   for (my ${cnt}=0; ${cnt}<xx; ${cnt}++) {<cr>}<cr><up><up>
-        inoremap @foreach   foreach ${elemt} (@arry) {<cr>}<cr><up><up>
-        inoremap @if    if () {<cr>}
-        inoremap @open open(FILE, "<", ${file}) or die ("can't open file ${file} ($!)");<cr>close(FILE) or die ("can't close file ${file} ($!)");
-        inoremap @push push(@array, "") ;
-        inoremap @opt  my ${opt};<cr>GetOptions (<cr>    'option' => \${opt}<cr>);
-    else
-        iunmap @head
-        iunmap @des
-        iunmap $
-        iunmap @open
-        iunmap @opt
-    endif
-endfunction 
-
-function! SwVhdlMode(vhdl_mode)
-    if a:vhdl_mode == "1"
-        inoremap @proc  <esc>:call InsertProcess()<cr>
-    else
-        unmap @proc
-    endif
-endfunction 
-
-function! SetLanguage()
-    if &filetype == "systemverilog" 
-        call SwVerilogMode(1)
-    elseif &filetype == "verilog" 
-        call SwVerilogMode(1)
-    elseif &filetype == "perl" 
-        call SwPerlMode(1) 
-    endif
-endfunction
-call SetLanguage()
 "=================================
 "=== FUNRCTION TO BE IMPLEMENT ===
 "=================================
@@ -580,9 +502,98 @@ ApcEnable
 "=== VERILOG EDIT SETTING ======
 "===============================
 let myvimrc = $MYVIMRC
-let veriEdit_dir = substitute(myvimrc,"\.vimrc$","veriEdit","g")
+let veriEdit_dir = substitute(myvimrc,"\.vimrc$","","g")
 "echo veriEdit_dir 
-command! Vh2vModDef  execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v module_def -tp<cr>"
-command! Vh2vRegDef  execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v reg_def -tp<cr>"
-command! Vh2vWireDef execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v wire_def -tp<cr>"
-command! Vh2vInst    execute "normal :'<,'>!perl ".veriEdit_dir."/editVeri.pl -vh2v instance -tp<cr>"
+command! Vh2vModDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v module_def -tp<cr>"
+command! Vh2vRegDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v reg_def -tp<cr>"
+command! Vh2vWireDef execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v wire_def -tp<cr>"
+command! Vh2vInst    execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v instance -tp<cr>"
+
+function! SwVerilogMode(verilog_mode)
+    if a:verilog_mode == "1"
+        inoremap @mod   module XXX(<cr><esc>A);<cr>endmodule<esc>kkA
+        inoremap @alw   always @ (posedge CLK or negedge RSTN) begin<cr>end<cr>
+        inoremap @if    if () begin<cr>end else begin<cr>end
+        inoremap @gen   generate<cr>endgenerate<cr>
+        inoremap @for   integer var;<cr>for(var=0; var<; var++) begin<cr>end<cr>
+        inoremap @init  initial begin<cr>end<cr>
+        inoremap @repe  repeat () @ (posedge CLK);<esc>
+        inoremap @task  task task_name;<cr>begin<cr>endtask<cr>
+        vmap     zci    :s/\./#\./<cr>:'<,'>s/(/#(/<cr>:'<,'>s/)/#)/<cr>:'<,'>s/,/#,/<cr>:'<,'>!column -t -s"\#"<cr>
+        "inoremap @ck  _|<esc>ki_<esc>ja|
+        inoremap @ck  ___HHH
+        inoremap @des   //============================================<cr>// (C) Copyright All rights reserved. Artiza networks Inc.<cr>//DESCRIPTION:<cr>//AUTHOR:Zeng<cr>//HISTORY<cr>//REV        EDITOR     DATE         DESCITPTION<cr>//============================================<cr>
+        inoremap @begin begin<cr>end<cr>
+        inoremap @case  case (XXX)<cr>YYY:begin<cr>end<cr>default:<cr>end<cr>endcase<cr>
+        inoremap @fpck  set_false_path -from [get_clocks -of_objects [get_pins PATH_CLOCK1]] -to [get_clocks -of_objects [get_pins PATH_CLOCK2]]
+        inoremap @fpdt  set_false_path -from [get_pins {PATH_START}] -to [get_pins {PATH_END}]
+        "command! Vh2vModDefT1    :'<,'>s/entity \s*\(\w*\) \s*is/\1 i_\1/
+        "command! Vh2vPLogDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*\s*;/\2put .\1 .;
+        "command! Vh2vPVecDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*(\s*\(\d*\) \s*\w*to \s*\(\d*\)\s*)\s*;/\2put [\3:\4] .\1 .;/
+        "command! Vh2vCmnt        :'<,'>s/--/.\/\//g
+        "command! Vh2vCol         :'<,'>!column -t -s "."
+    else
+        iunmap @mod
+        iunmap @alw
+        iunmap @if
+        iunmap @gen
+        iunmap @for
+        iunmap @init
+        vunmap zci
+        iunmap @ck
+        iunmap @des
+        iunmap @begin 
+        iunmap @case 
+        iunmap @fpck 
+        iunmap @fpdt 
+    endif
+endfunction 
+
+function! SwPerlMode(perl_mode)
+    if a:perl_mode == "1"
+        inoremap @#!  #!/usr/local/bin/perl
+        inoremap @des   #============================================<cr># (C) Copyright All rights reserved. Artiza networks Inc.<cr>#DESCRIPTION:<cr>#AUTHOR:Zeng<cr>#HISTORY<cr>#REV        EDITOR     DATE         DESCITPTION<cr>#============================================<cr>
+        inoremap $  ${}<left>
+        inoremap @for   for (my ${cnt}=0; ${cnt}<xx; ${cnt}++) {<cr>}<cr><up><up>
+        inoremap @foreach   foreach ${elemt} (@arry) {<cr>}<cr><up><up>
+        inoremap @if    if () {<cr>}
+        inoremap @open open(FILE, "<", ${file}) or die ("can't open file ${file} ($!)");<cr>close(FILE) or die ("can't close file ${file} ($!)");
+        inoremap @push push(@array, "") ;
+        inoremap @opt  my ${opt};<cr>GetOptions (<cr>    'option' => \${opt}<cr>);
+    else
+        iunmap @head
+        iunmap @des
+        iunmap $
+        iunmap @open
+        iunmap @opt
+    endif
+endfunction 
+
+let clk = "CLK"
+let rst = "RSTN"
+let activeh = ""
+function! SwVhdlMode(vhdl_mode)
+    if a:vhdl_mode == "1"
+        inoremap @proc  <esc>:call InsertProcess()<cr>
+        command! Ila   execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d ila<cr>"
+        command! Proc  execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d process -clk ".clk." -rst ".rst activeh."<cr>"
+        command! If   execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d if<cr>"
+        command! Entity   execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d entity<cr>"
+        command! -nargs=* Logic  execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d logic -sigtype "."<args>"." -signame XXX<cr>"
+    else
+        unmap @proc
+    endif
+endfunction 
+
+function! SetLanguage()
+    if &filetype == "systemverilog" 
+        call SwVerilogMode(1)
+    elseif &filetype == "verilog" 
+        call SwVerilogMode(1)
+    elseif &filetype == "perl" 
+        call SwPerlMode(1) 
+    elseif &filetype == "vhdl" 
+        call SwVhdlMode(1) 
+    endif
+endfunction
+call SetLanguage()
