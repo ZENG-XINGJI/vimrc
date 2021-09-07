@@ -40,6 +40,7 @@ nnoremap [  :call CplBrac("[","]")<cr>
 nnoremap {  :call CplBrac("{","}")<cr>
 nnoremap <  :call CplBrac("<",">")<cr>
 nnoremap '  :call CplBrac("'","'")<cr>
+nnoremap <c-t> :terminal<cr>
 "nnoremap "  :call CplBrac("\"","\"")<cr>
 "vmap zcb1 :call CplBrac("(")<cr>
 "vmap zcb2 :call CplBrac("[")<cr>
@@ -80,6 +81,9 @@ inoremap @ver [add/modify/remove]<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
 "imap ' ''<c-h>
 inoremap <c-c> <esc>
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
+
+tnoremap <c-n> <c-\><c-n>
+tnoremap <c-v> <c-w>""
 
 "================
 "===Preference===
