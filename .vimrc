@@ -52,6 +52,8 @@ vmap zbd yq:p:s/^/:call Bin2dec_core("/<cr>:s/$/")/<cr><cr>
 vmap zdb yq:p:s/^/:call Dec2bin_core("/<cr>:s/$/")/<cr><cr>
 vmap zdh yq:p:s/^/:call Dec2hex_core("/<cr>:s/$/")/<cr><cr>
 vmap <c-o> yq:p:s/^/:tabnew /<cr><cr>
+vmap cd yq:p:s/^/:cd /<cr><cr>
+vmap // yq:p:s/^/:\//<cr><cr>
 vmap zct   :s/\t/    /g<cr>
 vmap zp "0p
 vnoremap (  :call CplBrac("(",")")<cr>
@@ -505,8 +507,8 @@ ApcEnable
 "===============================
 "=== VERILOG EDIT SETTING ======
 "===============================
-let myvimrc = $MYVIMRC
-let veriEdit_dir = substitute(myvimrc,"\.vimrc$","","g")
+let g:myvimrc = $MYVIMRC
+let g:veriEdit_dir = substitute(g:myvimrc,"\.vimrc$","","g")
 "echo veriEdit_dir 
 command! Vh2vModDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v module_def -tp<cr>"
 command! Vh2vRegDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v reg_def -tp<cr>"
@@ -578,16 +580,23 @@ let rst = "RSTN"
 let activeh = ""
 function! SwVhdlMode(vhdl_mode)
     if a:vhdl_mode == "1"
-        inoremap @proc  <esc>:call InsertProcess()<cr>
-        command! Ila   execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d ila<cr>"
-        command! Proc  execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d process -clk ".clk." -rst ".rst activeh."<cr>"
-        command! If   execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d if<cr>"
+        command! Ila      execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d ila<cr>"
+        command! Proc     execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d process -clk ".clk." -rst ".rst activeh."<cr>"
+        command! If       execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d if<cr>"
         command! Entity   execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d entity<cr>"
-        command! -nargs=* Logic  execute "normal :read!perl ".veriEdit_dir."/vhdlEdit/editVhdl.pl -d logic -sigtype "."<args>"." -signame XXX<cr>"
+        command! -nargs=* Logic  call CreateSignalVhdl("logic",<f-args>,"0","0")
+        command! -nargs=* Vector call CreateSignalVhdl("vector",<f-args>)
     else
-        unmap @proc
     endif
 endfunction 
+
+function! CreateSignalVhdl(ifVec,sigType,sigName,beginBit,endBit)
+    if a:ifVec == "vector"
+        execute ":read!perl ".g:veriEdit_dir."/vhdlEdit/editVhdl.pl -d vector -sigtype ".a:sigType." -signame ".a:sigName." -bbegin ".a:beginBit." -bend ".a:endBit
+    else
+        execute ":read!perl ".g:veriEdit_dir."/vhdlEdit/editVhdl.pl -d logic -sigtype ".a:sigType." -signame ".a:sigName
+    endif
+endfunction
 
 function! SetLanguage()
     if &filetype == "systemverilog" 

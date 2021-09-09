@@ -25,6 +25,8 @@ my ${opt_sigtype} = "signal" ;
 my ${opt_signame} = "SIG_NAME" ;
 my ${opt_bitwidth} = 0 ;
 my ${opt_procname} = "PROCESS_NAME" ;
+my ${opt_beginBit} = 1 ;
+my ${opt_endBit} = 0 ;
 GetOptions (
     'f=s'     => \${file_in} ,
     't=s'     => \$text ,
@@ -37,6 +39,8 @@ GetOptions (
     'signame=s' => \${opt_signame}  ,
     'sigtype=s' => \${opt_sigtype}  ,
     'bitwidth=i' => \${opt_bitwidth} ,
+    'bbegin=i' => \${opt_beginBit} ,
+    'bend=i' => \${opt_endBit} ,
     'help|h!' => \${help} ,
     'v!'      => \${verbose} 
 );
@@ -80,6 +84,9 @@ elsif (${opt_desc} eq "entity") {
 }
 elsif (${opt_desc} eq "logic") {
     print_logic((${opt_sigtype},${opt_signame})) ;
+}
+elsif (${opt_desc} eq "vector") {
+    print_vector((${opt_sigtype},${opt_signame},${opt_beginBit},${opt_endBit})) ;
 }
 
 #==============================
@@ -174,9 +181,29 @@ sub print_logic {
     my ${sig_name} = $_[1] ;
     my ${desc} = "" ;
     if (${type} eq "signal"){
-    ${desc} = "signal ${sig_name}     : std_logic  ;\n";
-} else {
-    ${desc} = "${sig_name}     : ${type} std_logic  ;\n";
+        ${desc} = "signal ${sig_name}     : std_logic  ;\n";
+    } else {
+        ${desc} = "${sig_name}     : ${type} std_logic  ;\n";
+    }
+    print ${desc} ;
 }
+
+sub print_vector {
+    my ${type} = $_[0] ;
+    my ${sig_name} = $_[1] ;
+    my ${begin_bit} = $_[2] ;
+    my ${end_bit} = $_[3] ;
+    my ${to_word} = "" ;
+    if (${begin_bit} >= ${end_bit}) {
+        ${to_word} = "downto" ;
+    } else {
+        ${to_word} = "to" ;
+    }
+    my ${desc} = "" ;
+    if (${type} eq "signal"){
+        ${desc} = "signal ${sig_name}     : std_logic_vector (${begin_bit} ${to_word} ${end_bit})  ;\n";
+    } else {
+        ${desc} = "${sig_name}     : ${type} std_logic_vector (${begin_bit} ${to_word} ${end_bit})  ;\n";
+    }
     print ${desc} ;
 }
