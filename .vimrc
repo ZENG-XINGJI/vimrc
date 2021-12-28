@@ -79,7 +79,7 @@ inoremap {{ {}<left>
 inoremap "" ""<left>
 inoremap '' ''<left>
 inoremap << <><left>
-inoremap @ver [add/modify/remove]<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
+inoremap @ver [add/modify/remove/working]<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
 "imap ' ''<c-h>
 inoremap <c-c> <esc>
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
@@ -98,6 +98,7 @@ set cursorline
 set listchars=tab:..
 set list
 set noswapfile
+set nowrap
 highlight DiffAdd    cterm=bold ctermfg=15 ctermbg=34
 highlight DiffDelete cterm=bold ctermfg=15 ctermbg=219
 highlight DiffChange cterm=bold ctermfg=15 ctermbg=75
@@ -510,11 +511,6 @@ ApcEnable
 let g:myvimrc = $MYVIMRC
 let g:veriEdit_dir = substitute(g:myvimrc,"\.vimrc$","","g")
 "echo veriEdit_dir 
-command! Vh2vModDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v module_def -tp<cr>"
-command! Vh2vRegDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v reg_def -tp<cr>"
-command! Vh2vWireDef execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v wire_def -tp<cr>"
-command! Vh2vInst    execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v instance -tp<cr>"
-
 function! SwVerilogMode(verilog_mode)
     if a:verilog_mode == "1"
         inoremap @mod   module XXX(<cr><esc>A);<cr>endmodule<esc>kkA
@@ -538,6 +534,11 @@ function! SwVerilogMode(verilog_mode)
         "command! Vh2vPVecDefT1   :'<,'>s/\(\w*\)\s*: \s*\(\w*\) \s*\w*(\s*\(\d*\) \s*\w*to \s*\(\d*\)\s*)\s*;/\2put [\3:\4] .\1 .;/
         "command! Vh2vCmnt        :'<,'>s/--/.\/\//g
         "command! Vh2vCol         :'<,'>!column -t -s "."
+        command! Vh2vModDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v module_def -tp<cr>"
+        command! Vh2vRegDef  execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v reg_def -tp<cr>"
+        command! Vh2vWireDef execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v wire_def -tp<cr>"
+        command! Vh2vInst    execute "normal :'<,'>!perl ".veriEdit_dir."/veriEdit/editVeri.pl -vh2v instance -tp<cr>"
+
     else
         iunmap @mod
         iunmap @alw
