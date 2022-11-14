@@ -39,7 +39,7 @@ nnoremap (  :call CplBrac("(",")")<cr>
 nnoremap [  :call CplBrac("[","]")<cr>
 nnoremap {  :call CplBrac("{","}")<cr>
 nnoremap <  :call CplBrac("<",">")<cr>
-nnoremap '  :call CplBrac("'","'")<cr>
+"nnoremap '  :call CplBrac("'","'")<cr>
 nnoremap <c-t> :terminal<cr>
 "nnoremap "  :call CplBrac("\"","\"")<cr>
 "vmap zcb1 :call CplBrac("(")<cr>
@@ -52,10 +52,14 @@ vmap zbd yq:p:s/^/:call Bin2dec_core("/<cr>:s/$/")/<cr><cr>
 vmap zdb yq:p:s/^/:call Dec2bin_core("/<cr>:s/$/")/<cr><cr>
 vmap zdh yq:p:s/^/:call Dec2hex_core("/<cr>:s/$/")/<cr><cr>
 vmap <c-o> yq:p:s/^/:tabnew /<cr><cr>
-vmap cd yq:p:s/^/:cd /<cr><cr>
+vmap <c-g> yq:p:s/^/:cd /<cr><cr>
 vmap // yq:p:s/^/:\//<cr><cr>
 vmap zct   :s/\t/    /g<cr>
 vmap zp "0p
+vnoremap <c-h> 10h
+vnoremap <c-j> 10j
+vnoremap <c-k> 10k
+vnoremap <c-l> 10l
 vnoremap (  :call CplBrac("(",")")<cr>
 vnoremap [  :call CplBrac("[","]")<cr>
 vnoremap {  :call CplBrac("{","}")<cr>
@@ -79,7 +83,7 @@ inoremap {{ {}<left>
 inoremap "" ""<left>
 inoremap '' ''<left>
 inoremap << <><left>
-inoremap @ver [add/modify/remove/working]<esc>oversion:0x00??<cr>by zeng@2021.??.??<esc>
+inoremap @ver [add/modify/remove/working]<esc>oversion:0x00??<cr>by zeng@2022.??.??<esc>
 "imap ' ''<c-h>
 inoremap <c-c> <esc>
 inoremap <expr><CR>  pumvisible() ? "<C-y>" : "<CR>"
@@ -92,7 +96,7 @@ tnoremap <c-v> <c-w>""
 "================
 set number
 set tabstop=4
-set expandtab
+"set expandtab
 set hlsearch incsearch 
 set cursorline
 set listchars=tab:..
